@@ -1209,16 +1209,8 @@ extern "C" void host_clear_suggestion()
 //------------------------------------------------------------------------------
 int clink_forward_word(int count, int invoking_key)
 {
-    if (count != 0)
-    {
-another_word:
-        if (insert_suggestion(suggestion_action::insert_next_word))
-        {
-            count--;
-            if (count > 0)
-                goto another_word;
-        }
-    }
+    if (insert_suggestion(suggestion_action::insert_to_end) || accepted_whole_suggestion())
+        return 0;
 
     return rl_forward_word(count, invoking_key);
 }
