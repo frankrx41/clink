@@ -24,6 +24,19 @@ local keymap_color = { fg="34", bg="44", extfg="38;5;26", extbg="48;5;26", lean=
 flexprompt.add_color("keymap", keymap_color)
 
 --------------------------------------------------------------------------------
+local function render_admin(args)
+    local is_admin = os.isuseradmin()
+    if not is_admin then
+        return
+    end
+    
+    local text, color, altcolor
+    text = "(Admin)"
+    color = flexprompt.use_best_color("red","38;5;160")
+    return text, color
+end
+
+--------------------------------------------------------------------------------
 -- ANYCONNECT MODULE:  {anyconnect:novars:forcetext:text=conn,noconn,unknown:color_options}
 --
 -- Shows whether Cisco AnyConnect VPN is currently connected as well as the
@@ -204,14 +217,6 @@ local function render_http_port(args)
         local _, _, port = string.find(proxy, ":(%d+)$")
         text = port
     end
-    
-    -- local proxys = os.getenv("HTTPS_PROXY")
-    -- if proxys then
-    --     local _, _, ports = string.find(proxys, ":(%d+)$")
-    --     if ports ~= port then
-    --         text = text .. ports
-    --     end
-    -- end
     
     local color, altcolor
     color, altcolor = parse_inline_color(args, anyconnect_colors.connected)
@@ -1667,6 +1672,7 @@ clink.onendedit(builtin_modules_onendedit)
 --------------------------------------------------------------------------------
 -- Initialize the built-in modules.
 
+flexprompt.add_module( "admin",         render_admin                        )
 flexprompt.add_module( "anyconnect",    render_anyconnect                   )
 flexprompt.add_module( "http_port",     render_http_port                   )
 flexprompt.add_module( "battery",       render_battery                      )
